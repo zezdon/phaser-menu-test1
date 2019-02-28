@@ -23,13 +23,21 @@ var GameState = {
     //create a sprite for the background
     this.background = this.game.add.sprite(0, 0, 'background')
     
-    this.pic3 = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'pic3');
-    this.pic3.anchor.setTo(0.5);
+    //group for animals
+    var animalData = [
+      {key: 'pic1', text: 'pic1'},
+      {key: 'pic2', text: 'pic2'},
+      {key: 'pic3', text: 'pic3'},
+      {key: 'pic4', text: 'pic4'}
+    ];
+    
+    this.animals = this.game.add.group();
 
-    //enable user input on sprite
-    this.pic3.inputEnabled = true;
-    this.pic3.input.pixelPerfectClick = true;
-    this.pic3.events.onInputDown.add(this.animateAnimal, this);
+    var self = this;
+
+    animalData.forEach(function(element){
+      self.animals.create(200, self.game.world.centerY, element.key);
+    });
 
     //left arrow
     this.leftArrow = this.game.add.sprite(60, this.game.world.centerY, 'arrow');
@@ -37,7 +45,7 @@ var GameState = {
     this.leftArrow.scale.x = -1;
     this.leftArrow.customParams = {direction: -1};
 
-    //left arrow allow user input
+    //left arrow user input
     this.leftArrow.inputEnabled = true;
     this.leftArrow.input.pixelPerfectClick = true;
     this.leftArrow.events.onInputDown.add(this.switchAnimal, this);
@@ -56,11 +64,13 @@ var GameState = {
   //this is executed multiple times per second
   update: function() {
   },
+  //play animal animation
+  animateAnimal: function(sprite, event) {
+    console.log('animate..');
+  },
+  //switch animal
   switchAnimal: function(sprite, event) {
     console.log('move animal');
-  },
-  animateAnimal: function(sprite, event) {
-    console.log('animate animal');
   }
   
 
