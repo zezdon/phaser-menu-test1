@@ -34,11 +34,28 @@ var GameState = {
     this.animals = this.game.add.group();
 
     var self = this;
+    var animal;
 
     animalData.forEach(function(element){
-      self.animals.create(200, self.game.world.centerY, element.key);
+      //create each animal and put it in the group
+      animal = self.animals.create(-1000, self.game.world.centerY, element.key);
+
+      //I'm saving everything that's not Phaser-related in a custom property
+      animal.customParams = {text: element.text};
+
+      //anchor point set to the center of the sprite
+      animal.anchor.setTo(0.5);
+
+      //enable input so we can touch it
+      animal.inputEnabled = true;
+      animal.input.pixelPerfectClick = true;
+      animal.events.onInputDown.add(self.animateAnimal, self);
     });
 
+    //place current animal in the middle
+    this.currentAnimal = this.animals.next();
+    this.currentAnimal.position.set(this.game.world.centerX, this.game.world.centerY);
+   
     //left arrow
     this.leftArrow = this.game.add.sprite(60, this.game.world.centerY, 'arrow');
     this.leftArrow.anchor.setTo(0.5);
