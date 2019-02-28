@@ -37,10 +37,10 @@ var GameState = {
     var self = this;    
     var animal;
     animalData.forEach(function(element){
-      //create each animal and put it in the group
+      //create each animal and save it's properties
       animal = self.animals.create(-1000, self.game.world.centerY, element.key, 0);
 
-      //I'm saving everything that's not Phaser-related in a custom property
+      //I'm saving everything that's not Phaser-related in an object
       animal.customParams = {text: element.key};
 
       //anchor point set to the center of the sprite
@@ -87,20 +87,31 @@ var GameState = {
   },
   //switch animal
   switchAnimal: function(sprite, event) {
-     var newAnimal, endX;
+    
 
-     if(sprite.customParams.direction > 0) {
+    var newAnimal, endX;
+    //according to the arrow they pressed, which animal comes in
+    if(sprite.customParams.direction > 0) {
       newAnimal = this.animals.next();
+      newAnimal.x = -newAnimal.width/2;
       endX = 640 + this.currentAnimal.width/2;
-     }
-     else {
+    }
+    else {
       newAnimal = this.animals.previous();
+      newAnimal.x = 640 + newAnimal.width/2;
       endX = -this.currentAnimal.width/2;
-     }
+    }
 
-     this.currentAnimal.x = endX;
-     newAnimal.x = this.game.world.centerX;
-     this.currentAnimal = newAnimal;
+    //tween animations, moving on x
+    var newAnimalMovement = this.game.add.tween(newAnimal);
+    newAnimalMovement.to({x: this.game.world.centerX}, 1000);
+    newAnimalMovement.start();  
+
+    var currentAnimalMovement = this.game.add.tween(this.currentAnimal);
+    currentAnimalMovement.to({x: endX}, 1000);
+    currentAnimalMovement.start();  
+
+    this.currentAnimal = newAnimal;
   }
 
 };
