@@ -28,11 +28,21 @@ var GameState = {
 	
     this.pic3 = this.game.add.sprite(500, 300, 'pic3');
     this.pic3.anchor.setTo(0.5);
+
+	//flip on x
     this.pic3.scale.setTo(-1, 1);	
+
+    this.pic4 = this.game.add.sprite(100, 250, 'pic4');
+    this.pic4.scale.setTo(0.5);
+    this.pic4.anchor.setTo(0.5);
+
+    //rotate 90 degrees clockwise
+    this.pic4.angle = 90;
 	
   },
   //this is executed multiple times per second
   update: function() {
+    this.pic4.angle += 0.5;	  
   },
   
 
