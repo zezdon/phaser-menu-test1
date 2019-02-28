@@ -24,7 +24,11 @@ var GameState = {
     this.pic1.scale.setTo(2, 1);
 
     this.pic2 = this.game.add.sprite(120, 10, 'pic2');
-    this.pic2.scale.setTo(0.5);	
+    this.pic2.scale.setTo(0.5);
+	
+    this.pic3 = this.game.add.sprite(500, 300, 'pic3');
+    this.pic3.anchor.setTo(0.5);
+    this.pic3.scale.setTo(-1, 1);	
 	
   },
   //this is executed multiple times per second
