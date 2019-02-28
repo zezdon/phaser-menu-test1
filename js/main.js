@@ -87,7 +87,13 @@ var GameState = {
   },
   //switch animal
   switchAnimal: function(sprite, event) {
-    
+
+    //if an animation is taking place don't do anything
+    if(this.isMoving) {
+      return false;
+    }
+
+    this.isMoving = true;
 
     var newAnimal, endX;
     //according to the arrow they pressed, which animal comes in
@@ -103,17 +109,20 @@ var GameState = {
     }
 
     //tween animations, moving on x
-    var newAnimalMovement = this.game.add.tween(newAnimal);
-    newAnimalMovement.to({x: this.game.world.centerX}, 1000);
-    newAnimalMovement.start();  
+    var newAnimalMovement = game.add.tween(newAnimal);
+    newAnimalMovement.to({ x: this.game.world.centerX }, 1000);
+    newAnimalMovement.onComplete.add(function(){
+      this.isMoving = false;
+    }, this);
+    newAnimalMovement.start();
 
-    var currentAnimalMovement = this.game.add.tween(this.currentAnimal);
-    currentAnimalMovement.to({x: endX}, 1000);
-    currentAnimalMovement.start();  
+    var currentAnimalMovement = game.add.tween(this.currentAnimal);
+    currentAnimalMovement.to({ x: endX }, 1000);
+    currentAnimalMovement.start();
 
     this.currentAnimal = newAnimal;
+  
   }
-
 };
 
 //initiate the Phaser framework
