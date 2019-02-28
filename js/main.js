@@ -21,6 +21,11 @@ var GameState = {
     //place a sprite by it's center, not the top-left corner
     this.pic1.anchor.setTo(0.5, 0.5); // or just this.chicken.anchor.setTo(0.5)
 
+    this.pic1.scale.setTo(2, 1);
+
+    this.pic2 = this.game.add.sprite(120, 10, 'pic2');
+    this.pic2.scale.setTo(0.5);	
+	
   },
   //this is executed multiple times per second
   update: function() {
