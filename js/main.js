@@ -11,7 +11,12 @@ var GameState = {
   },
   //executed after everything is loaded
   create: function() {
-    
+
+    this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+
+    this.scale.pageAlignHorizontally = true;
+    this.scale.pageAlignVertically = true;
+  
     //create a sprite for the background
     this.background = this.game.add.sprite(0, 0, 'background');
     
