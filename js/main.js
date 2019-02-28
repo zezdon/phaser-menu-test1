@@ -24,19 +24,15 @@ var GameState = {
     this.scale.pageAlignHorizontally = true;
     this.scale.pageAlignVertically = true;
 
-    //screen size will be set automatically
-    this.scale.setScreenSize(true);
-
-
     //create a sprite for the background
     this.background = this.game.add.sprite(0, 0, 'background')
     
     //group for animals
     var animalData = [
-      {key: 'pic1', text: 'CHICKEN', audio: 'chickenSound'},
-      {key: 'pic2', text: 'HORSE', audio: 'horseSound'},
-      {key: 'pic3', text: 'PIG', audio: 'pigSound'},
-      {key: 'pic4', text: 'SHEEP', audio: 'sheepSound'}
+      {key: 'pic1', text: 'Film Roll', audio: 'chickenSound'},
+      {key: 'pic2', text: 'Meter', audio: 'horseSound'},
+      {key: 'pic3', text: 'Frame', audio: 'pigSound'},
+      {key: 'pic4', text: 'Screw-nut', audio: 'sheepSound'}
     ];
 
     //create a group to store all animals
@@ -49,7 +45,7 @@ var GameState = {
       animal = self.animals.create(-1000, self.game.world.centerY, element.key, 0);
 
       //I'm saving everything that's not Phaser-related in an object
-      animal.customParams = {text: element.key, sound: self.game.add.audio(element.audio)};
+      animal.customParams = {text: element.text, sound: self.game.add.audio(element.audio)};
 
       //anchor point set to the center of the sprite
       animal.anchor.setTo(0.5);
@@ -66,6 +62,9 @@ var GameState = {
     //place first animal in the middle
     this.currentAnimal = this.animals.next();
     this.currentAnimal.position.set(this.game.world.centerX, this.game.world.centerY);
+
+    //show animal text
+    this.showText(this.currentAnimal);
 
     //left arrow
     this.leftArrow = this.game.add.sprite(60, this.game.world.centerY, 'arrow');
@@ -95,7 +94,7 @@ var GameState = {
   },
   //play animal animation and sound
   animateAnimal: function(sprite, event) {
-    //sprite.play('animate');
+    sprite.play('animate');
     sprite.customParams.sound.play();
   },
   //switch animal
@@ -107,6 +106,9 @@ var GameState = {
     }
 
     this.isMoving = true;
+
+    //hide text
+    this.animalText.visible = false;
 
     var newAnimal, endX;
     //according to the arrow they pressed, which animal comes in
@@ -124,7 +126,11 @@ var GameState = {
     //tween animations, moving on x
     var newAnimalMovement = this.game.add.tween(newAnimal);
     newAnimalMovement.to({ x: this.game.world.centerX }, 1000);
-    newAnimalMovement.onComplete.add(function(){this.isMoving = false;}, this);
+    newAnimalMovement.onComplete.add(function()
+      {
+        this.isMoving = false;
+        this.showText(newAnimal);
+      }, this);
     newAnimalMovement.start();
 
     var currentAnimalMovement = this.game.add.tween(this.currentAnimal);
@@ -132,6 +138,20 @@ var GameState = {
     currentAnimalMovement.start();
 
     this.currentAnimal = newAnimal;
+  },
+  showText: function(animal) {
+    if(!this.animalText) {
+      var style = {
+        font: 'bold 30pt Arial',
+        fill: '#D0171B',
+        align: 'center'
+      }
+      this.animalText = this.game.add.text(this.game.width/2, this.game.height * 0.85, '', style);
+      this.animalText.anchor.setTo(0.5);
+    }
+
+    this.animalText.setText(animal.customParams.text);
+    this.animalText.visible = true;
   }
 
 };
