@@ -8,7 +8,11 @@ var GameState = {
     this.game.load.image('pic2', 'assets/images/pic2.png');
     this.game.load.image('pic3', 'assets/images/pic3.png');
     this.game.load.image('pic4', 'assets/images/pic4.png');
-    
+
+    this.load.audio('chickenSound', ['assets/audio/chicken.ogg', 'assets/audio/chicken.mp3']);
+    this.load.audio('horseSound', ['assets/audio/horse.ogg', 'assets/audio/horse.mp3']);
+    this.load.audio('pigSound', ['assets/audio/pig.ogg', 'assets/audio/pig.mp3']);
+    this.load.audio('sheepSound', ['assets/audio/sheep.ogg', 'assets/audio/sheep.mp3']);
   },
   //executed after everything is loaded
   create: function() {
@@ -19,16 +23,20 @@ var GameState = {
     //have the game centered horizontally
     this.scale.pageAlignHorizontally = true;
     this.scale.pageAlignVertically = true;
-    
+
+    //screen size will be set automatically
+    this.scale.setScreenSize(true);
+
+
     //create a sprite for the background
     this.background = this.game.add.sprite(0, 0, 'background')
     
     //group for animals
     var animalData = [
-      {key: 'pic1', text: 'pic1'},
-      {key: 'pic2', text: 'pic2'},
-      {key: 'pic3', text: 'pic3'},
-      {key: 'pic4', text: 'pic4'}
+      {key: 'pic1', text: 'CHICKEN', audio: 'chickenSound'},
+      {key: 'pic2', text: 'HORSE', audio: 'horseSound'},
+      {key: 'pic3', text: 'PIG', audio: 'pigSound'},
+      {key: 'pic4', text: 'SHEEP', audio: 'sheepSound'}
     ];
 
     //create a group to store all animals
@@ -41,10 +49,13 @@ var GameState = {
       animal = self.animals.create(-1000, self.game.world.centerY, element.key, 0);
 
       //I'm saving everything that's not Phaser-related in an object
-      animal.customParams = {text: element.key};
+      animal.customParams = {text: element.key, sound: self.game.add.audio(element.audio)};
 
       //anchor point set to the center of the sprite
       animal.anchor.setTo(0.5);
+
+      //create animal animation
+      animal.animations.add('animate', [0, 1, 2, 1, 0, 1], 3, false);
 
       //enable input so we can touch it
       animal.inputEnabled = true;
@@ -80,10 +91,12 @@ var GameState = {
   },
   //this is executed multiple times per second
   update: function() {
+    //this.animals.addAll('angle', 2);
   },
-  //play animal animation
+  //play animal animation and sound
   animateAnimal: function(sprite, event) {
-    console.log('animate..');
+    //sprite.play('animate');
+    sprite.customParams.sound.play();
   },
   //switch animal
   switchAnimal: function(sprite, event) {
@@ -109,20 +122,18 @@ var GameState = {
     }
 
     //tween animations, moving on x
-    var newAnimalMovement = game.add.tween(newAnimal);
+    var newAnimalMovement = this.game.add.tween(newAnimal);
     newAnimalMovement.to({ x: this.game.world.centerX }, 1000);
-    newAnimalMovement.onComplete.add(function(){
-      this.isMoving = false;
-    }, this);
+    newAnimalMovement.onComplete.add(function(){this.isMoving = false;}, this);
     newAnimalMovement.start();
 
-    var currentAnimalMovement = game.add.tween(this.currentAnimal);
+    var currentAnimalMovement = this.game.add.tween(this.currentAnimal);
     currentAnimalMovement.to({ x: endX }, 1000);
     currentAnimalMovement.start();
 
     this.currentAnimal = newAnimal;
-  
   }
+
 };
 
 //initiate the Phaser framework
