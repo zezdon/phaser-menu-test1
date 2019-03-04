@@ -27,44 +27,44 @@ var GameState = {
     //create a sprite for the background
     this.background = this.game.add.sprite(0, 0, 'background')
     
-    //group for animals
-    var animalData = [
+    //group for pictures
+    var pictureData = [
       {key: 'pic1', text: 'Film Roll', audio: 'chickenSound'},
       {key: 'pic2', text: 'Meter', audio: 'horseSound'},
       {key: 'pic3', text: 'Frame', audio: 'pigSound'},
       {key: 'pic4', text: 'Screw-nut', audio: 'sheepSound'}
     ];
 
-    //create a group to store all animals
-    this.animals = this.game.add.group();
+    //create a group to store all pictures
+    this.pictures = this.game.add.group();
 
     var self = this;    
-    var animal;
-    animalData.forEach(function(element){
-      //create each animal and save it's properties
-      animal = self.animals.create(-1000, self.game.world.centerY, element.key, 0);
+    var picObj;
+    pictureData.forEach(function(element){
+      //create each picObj and save it's properties
+      picObj = self.pictures.create(-1000, self.game.world.centerY, element.key, 0);
 
       //I'm saving everything that's not Phaser-related in an object
-      animal.customParams = {text: element.text, sound: self.game.add.audio(element.audio)};
+      picObj.customParams = {text: element.text, sound: self.game.add.audio(element.audio)};
 
       //anchor point set to the center of the sprite
-      animal.anchor.setTo(0.5);
+      picObj.anchor.setTo(0.5);
 
-      //create animal animation
-      animal.animations.add('animate', [0, 1, 2, 1, 0, 1], 3, false);
+      //create picObj animation
+      picObj.animations.add('animate', [0, 1, 2, 1, 0, 1], 3, false);
 
       //enable input so we can touch it
-      animal.inputEnabled = true;
-      animal.input.pixelPerfectClick = true;
-      animal.events.onInputDown.add(self.animateAnimal, self);
+      picObj.inputEnabled = true;
+      picObj.input.pixelPerfectClick = true;
+      picObj.events.onInputDown.add(self.animatePicture, self);
     });
 
-    //place first animal in the middle
-    this.currentAnimal = this.animals.next();
-    this.currentAnimal.position.set(this.game.world.centerX, this.game.world.centerY);
+    //place first picObj in the middle
+    this.currentPicture = this.pictures.next();
+    this.currentPicture.position.set(this.game.world.centerX, this.game.world.centerY);
 
-    //show animal text
-    this.showText(this.currentAnimal);
+    //show picObj text
+    this.showText(this.currentPicture);
 
     //left arrow
     this.leftArrow = this.game.add.sprite(60, this.game.world.centerY, 'arrow');
@@ -75,7 +75,7 @@ var GameState = {
     //left arrow user input
     this.leftArrow.inputEnabled = true;
     this.leftArrow.input.pixelPerfectClick = true;
-    this.leftArrow.events.onInputDown.add(this.switchAnimal, this);
+    this.leftArrow.events.onInputDown.add(this.switchPicture, this);
 
     //right arrow
     this.rightArrow = this.game.add.sprite(580, this.game.world.centerY, 'arrow');
@@ -85,20 +85,20 @@ var GameState = {
     //right arrow user input
     this.rightArrow.inputEnabled = true;
     this.rightArrow.input.pixelPerfectClick = true;
-    this.rightArrow.events.onInputDown.add(this.switchAnimal, this);    
+    this.rightArrow.events.onInputDown.add(this.switchPicture, this);    
 
   },
   //this is executed multiple times per second
   update: function() {
-    //this.animals.addAll('angle', 2);
+    //this.pictures.addAll('angle', 2);
   },
-  //play animal animation and sound
-  animateAnimal: function(sprite, event) {
+  //play picObj animation and sound
+  animatePicture: function(sprite, event) {
     sprite.play('animate');
     sprite.customParams.sound.play();
   },
-  //switch animal
-  switchAnimal: function(sprite, event) {
+  //switch picObj
+  switchPicture: function(sprite, event) {
 
     //if an animation is taking place don't do anything
     if(this.isMoving) {
@@ -108,50 +108,50 @@ var GameState = {
     this.isMoving = true;
 
     //hide text
-    this.animalText.visible = false;
+    this.pictureText.visible = false;
 
-    var newAnimal, endX;
-    //according to the arrow they pressed, which animal comes in
+    var newPicture, endX;
+    //according to the arrow they pressed, which picObj comes in
     if(sprite.customParams.direction > 0) {
-      newAnimal = this.animals.next();
-      newAnimal.x = -newAnimal.width/2;
-      endX = 640 + this.currentAnimal.width/2;
+      newPicture = this.pictures.next();
+      newPicture.x = -newPicture.width/2;
+      endX = 640 + this.currentPicture.width/2;
     }
     else {
-      newAnimal = this.animals.previous();
-      newAnimal.x = 640 + newAnimal.width/2;
-      endX = -this.currentAnimal.width/2;
+      newPicture = this.pictures.previous();
+      newPicture.x = 640 + newPicture.width/2;
+      endX = -this.currentPicture.width/2;
     }
 
     //tween animations, moving on x
-    var newAnimalMovement = this.game.add.tween(newAnimal);
-    newAnimalMovement.to({ x: this.game.world.centerX }, 1000);
-    newAnimalMovement.onComplete.add(function()
+    var newPictureMovement = this.game.add.tween(newPicture);
+    newPictureMovement.to({ x: this.game.world.centerX }, 1000);
+    newPictureMovement.onComplete.add(function()
       {
         this.isMoving = false;
-        this.showText(newAnimal);
+        this.showText(newPicture);
       }, this);
-    newAnimalMovement.start();
+    newPictureMovement.start();
 
-    var currentAnimalMovement = this.game.add.tween(this.currentAnimal);
-    currentAnimalMovement.to({ x: endX }, 1000);
-    currentAnimalMovement.start();
+    var currentPictureMovement = this.game.add.tween(this.currentPicture);
+    currentPictureMovement.to({ x: endX }, 1000);
+    currentPictureMovement.start();
 
-    this.currentAnimal = newAnimal;
+    this.currentPicture = newPicture;
   },
-  showText: function(animal) {
-    if(!this.animalText) {
+  showText: function(picObj) {
+    if(!this.pictureText) {
       var style = {
         font: 'bold 30pt Arial',
         fill: '#D0171B',
         align: 'center'
       }
-      this.animalText = this.game.add.text(this.game.width/2, this.game.height * 0.85, '', style);
-      this.animalText.anchor.setTo(0.5);
+      this.pictureText = this.game.add.text(this.game.width/2, this.game.height * 0.85, '', style);
+      this.pictureText.anchor.setTo(0.5);
     }
 
-    this.animalText.setText(animal.customParams.text);
-    this.animalText.visible = true;
+    this.pictureText.setText(picObj.customParams.text);
+    this.pictureText.visible = true;
   }
 
 };
